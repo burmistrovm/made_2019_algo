@@ -4,50 +4,66 @@
  */
 #include <vector>
 #include <iostream>
+#include <sstream>
 
 int find_pivot(std::vector<int> cont,
                int left_num, int right_num)
 {
-    return int((right_num + left_num) / 2);
+    int middle = int((left_num + right_num) / 2);
+    if (left_num > right_num)
+    {
+        if (right_num > middle) {
+            return right_num;
+        }
+        else
+        {
+            return middle;
+        }
+    }
+    else
+    {
+        if (left_num > middle) {
+            return left_num;
+        }
+        else
+        {
+            return middle;
+        }
+    }
 }
 
 void partition(std::vector<int> &cont,
               int left_num, int right_num,
               int &pivot_num)
 {
-    int left_side = left_num, right_side = right_num - 1;
-    int curr_num = left_side;
+
+    // меняем pivot местами с правым крайним элементом
     std::swap(cont[right_num], cont[pivot_num]);
     pivot_num = right_num;
 
-    while (left_side != right_side) {
-        if (cont[left_side] <= cont[pivot_num]) {
-            left_side++;
-            curr_num++;
-        }
-        else
-        {
-            std::swap(cont[curr_num], cont[right_side]);
-            right_side--;
-        }
-    }
-    if (cont[curr_num] < cont[pivot_num])
+    int i = right_num, j = right_num;
+    while (j >= left_num)
     {
-        curr_num++;
+        if (cont[j] > cont[pivot_num]) {
+            i--;
+            std::swap(cont[i], cont[j]);
+            j--;
+        }
+        else {
+            j--;
+        }
     }
-    std::swap(cont[curr_num], cont[pivot_num]);
-    pivot_num = curr_num;
+    std::swap(cont[i], cont[pivot_num]);
+    pivot_num = i;
 }
 
 int get_order_stat(std::vector<int> vec, int ord_stat)
 {
-    int pivot_num;
     int left_num = 0, right_num = vec.size() - 1;
-    bool flag_stop = false;
-    while (!flag_stop)
+    int pivot_num = find_pivot(vec, right_num, left_num);
+    partition(vec, left_num, right_num, pivot_num);
+    while (pivot_num != ord_stat)
     {
-        pivot_num = find_pivot(vec, right_num, left_num);
-        partition(vec, left_num, right_num, pivot_num);
         if (pivot_num < ord_stat)
         {
             left_num = pivot_num + 1;
@@ -56,26 +72,28 @@ int get_order_stat(std::vector<int> vec, int ord_stat)
         {
             right_num = pivot_num - 1;
         }
-        else
-        {
-            flag_stop = true;
-        }
-        if (right_num == left_num)
-        {
-            flag_stop = true;
-        }
+        pivot_num = find_pivot(vec, right_num, left_num);
+        partition(vec, left_num, right_num, pivot_num);
     }
-    return pivot_num;
+    return vec[pivot_num];
 }
 
 int main()
 {
-    std::vector<int> v = {6, 5, 4, 3, 2, 1, 7};
-    int pivot_num = 2;
+    int dim, ord_stat;
+    std::cin >> dim >> ord_stat;
+    std::cin.ignore();
 
-    std::cout << get_order_stat(v, 6) << std::endl;
-//    for (int i = 0; i < v.size(); ++i) {
-//        std::cout << v[i] << std::endl;
-//    }
+    std::string line;
+    std::getline(std::cin, line);
+    std::stringstream ss(line);
+
+    int value;
+    std::vector<int> vec = std::vector<int>();
+    while (ss >> value)
+    {
+        vec.push_back(value);
+    }
+    std::cout << get_order_stat(vec, ord_stat);
     return 0;
 }
