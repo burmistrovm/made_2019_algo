@@ -84,15 +84,10 @@ int main()
     std::cin >> dim >> ord_stat;
     std::cin.ignore();
 
-    std::string line;
-    std::getline(std::cin, line);
-    std::stringstream ss(line);
-
-    int value;
-    std::vector<int> vec = std::vector<int>();
-    while (ss >> value)
+    std::vector<int> vec = std::vector<int>(dim);
+    for (int i = 0; i < dim; ++i)
     {
-        vec.push_back(value);
+        std::cin >> vec[i];
     }
     std::cout << get_order_stat(vec, ord_stat);
     return 0;
