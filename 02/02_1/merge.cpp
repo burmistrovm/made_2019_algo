@@ -46,16 +46,36 @@ std::vector<int> merge_with_inv_count(const std::vector<int> vec1, const std::ve
     return res_vec;
 }
 
-
 int main()
 {
-    std::vector input_vec;
+    std::vector<int> input_vec;
     std::string line;
     int value = 0;
+    std::vector<std::vector<int>> merge_vecs = std::vector<std::vector<int>>();
     while (std::getline(std::cin, line) and !line.empty()) {
         value = std::stoi(line);
-
+        merge_vecs.push_back(std::vector<int>{value});
     }
-    std::cout << "bye";
+
+    int inv_num = 0;
+
+    while (merge_vecs.size() != 1)
+    {
+        std::vector<std::vector<int>> new_merge_vecs = std::vector<std::vector<int>>();
+        for (int i = 0; i < merge_vecs.size(); i = i + 2)
+        {
+            if ((i + 1) == merge_vecs.size())
+            {
+                new_merge_vecs.push_back(merge_vecs[i]);
+            }
+            else
+            {
+                new_merge_vecs.push_back(merge_with_inv_count(merge_vecs[i], merge_vecs[i+1], inv_num));
+            }
+        }
+        merge_vecs = new_merge_vecs;
+    }
+
+    std::cout << inv_num;
     return 0;
 }
