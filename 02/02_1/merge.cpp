@@ -9,8 +9,9 @@
 
 #include <vector>
 #include <iostream>
+#include <stdint.h>
 
-std::vector<int> merge_with_inv_count(const std::vector<int> vec1, const std::vector<int> vec2, int &inv_num)
+std::vector<int> merge_with_inv_count(const std::vector<int> vec1, const std::vector<int> vec2, int64_t &inv_num)
 {
     int vec1_num = 0, vec2_num = 0;
     int res_vec_num = 0;
@@ -51,29 +52,28 @@ int main()
     std::vector<int> input_vec;
     std::string line;
     int value = 0;
-    std::vector<std::vector<int>> merge_vecs = std::vector<std::vector<int>>();
+    std::vector<std::vector<int>>* merge_vecs = new std::vector<std::vector<int>>();
     while (std::getline(std::cin, line) and !line.empty()) {
         value = std::stoi(line);
-        merge_vecs.push_back(std::vector<int>{value});
+        merge_vecs->push_back(std::vector<int>{value});
     }
+    int64_t inv_num = 0;
 
-    int inv_num = 0;
-
-    while (merge_vecs.size() != 1)
+    while (merge_vecs->size() != 1)
     {
         std::vector<std::vector<int>> new_merge_vecs = std::vector<std::vector<int>>();
-        for (int i = 0; i < merge_vecs.size(); i = i + 2)
+        for (int i = 0; i < merge_vecs->size(); i = i + 2)
         {
-            if ((i + 1) == merge_vecs.size())
+            if ((i + 1) == merge_vecs->size())
             {
-                new_merge_vecs.push_back(merge_vecs[i]);
+                new_merge_vecs.push_back((*merge_vecs)[i]);
             }
             else
             {
-                new_merge_vecs.push_back(merge_with_inv_count(merge_vecs[i], merge_vecs[i+1], inv_num));
+                new_merge_vecs.push_back(merge_with_inv_count((*merge_vecs)[i], (*merge_vecs)[i], inv_num));
             }
         }
-        merge_vecs = new_merge_vecs;
+        merge_vecs = &new_merge_vecs;
     }
 
     std::cout << inv_num;
