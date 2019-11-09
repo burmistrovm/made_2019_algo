@@ -36,8 +36,6 @@ void partition(std::vector<int> &cont,
               int left_num, int right_num,
               int &pivot_num)
 {
-
-    // меняем pivot местами с правым крайним элементом
     std::swap(cont[right_num], cont[pivot_num]);
     pivot_num = right_num;
 
