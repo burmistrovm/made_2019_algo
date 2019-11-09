@@ -9,7 +9,7 @@
 
 #include <vector>
 #include <iostream>
-#include <stdint.h>
+
 
 std::vector<int> merge_with_inv_count(const std::vector<int> vec1, const std::vector<int> vec2, int64_t &inv_num)
 {
@@ -47,34 +47,38 @@ std::vector<int> merge_with_inv_count(const std::vector<int> vec1, const std::ve
     return res_vec;
 }
 
+std::vector<int> merge_sort(const std::vector<int> vec, int begin, int end, int64_t &inv_num) {
+    std::vector<int> left;
+    std::vector<int> right;
+    std::vector<int> res;
+    if (end - begin > 0)
+    {
+        left = merge_sort(vec, begin, int((begin + end) / 2), inv_num);
+        right = merge_sort(vec, int((begin + end) / 2) + 1, end, inv_num);
+        res = merge_with_inv_count(left, right, inv_num);
+    }
+    else if(begin == end)
+    {
+        res = std::vector<int>{vec[begin]};
+    }
+    else {
+        res = std::vector<int>();
+    }
+    return res;
+}
+
 int main()
 {
-    std::vector<int> input_vec;
     std::string line;
     int value = 0;
-    std::vector<std::vector<int>>* merge_vecs = new std::vector<std::vector<int>>();
+    std::vector<int> vec = std::vector<int>();
     while (std::getline(std::cin, line) and !line.empty()) {
         value = std::stoi(line);
-        merge_vecs->push_back(std::vector<int>{value});
+        vec.push_back(value);
     }
-    int64_t inv_num = 0;
 
-    while (merge_vecs->size() != 1)
-    {
-        std::vector<std::vector<int>> new_merge_vecs = std::vector<std::vector<int>>();
-        for (int i = 0; i < merge_vecs->size(); i = i + 2)
-        {
-            if ((i + 1) == merge_vecs->size())
-            {
-                new_merge_vecs.push_back((*merge_vecs)[i]);
-            }
-            else
-            {
-                new_merge_vecs.push_back(merge_with_inv_count((*merge_vecs)[i], (*merge_vecs)[i], inv_num));
-            }
-        }
-        merge_vecs = &new_merge_vecs;
-    }
+    int64_t inv_num = 0;
+    std::vector<int> res = merge_sort(vec, 0, vec.size() - 1, inv_num);
 
     std::cout << inv_num;
     return 0;
