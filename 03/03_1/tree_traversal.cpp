@@ -3,7 +3,6 @@
 */
 #include <vector>
 #include <iostream>
-#include <docobjectservice.h>
 
 struct TreeNode
 {
@@ -26,12 +25,12 @@ private:
 
 void Binary_Tree::insert(int value)
 {
-    bool stop_flag = False;
+    bool stop_flag = false;
     TreeNode* current_node = root;
     if (!root)
     {
         root = new TreeNode(value);
-        stop_flag = True;
+        stop_flag = true;
     }
     while (!stop_flag)
     {
@@ -42,7 +41,7 @@ void Binary_Tree::insert(int value)
                 current_node = current_node->right;
             } else
             {
-                stop_flag = True;
+                stop_flag = true;
                 current_node->right = new TreeNode(value);
             }
         }
@@ -53,7 +52,7 @@ void Binary_Tree::insert(int value)
                 current_node = current_node->left;
             } else
             {
-                stop_flag = True;
+                stop_flag = true;
                 current_node->left = new TreeNode(value);
             }
         }
@@ -64,38 +63,45 @@ void Binary_Tree::post_order_traversal()
 {
     std::vector<TreeNode*> parents = std::vector<TreeNode*>();
     TreeNode* curr_node = root;
-    parents.push_back(root);
-    while (parents.size() != 0) {
-        // на каждой итерации от текущей ноды движемся влево до конца
-        while (curr_node)
+    TreeNode* last_node = nullptr;
+    bool is_first = true;
+    while ((parents.size() != 0) or is_first) {
+        is_first = false;
+        // если текущая нода существует, и мы ни разу не были
+        // в ее левом поддереве, то движемся туда
+        if ((curr_node != nullptr) and (curr_node != last_node))
         {
-            if (curr_node->left) {
-                parents.push_back(curr_node->left);
-            }
+            parents.push_back(curr_node);
             curr_node = curr_node->left;
         }
-        // после прохода влево до конца выводим всех предков без правых
-        // дочерних веток
-        curr_node = parents.back();
-
-        while ((parents.size() != 0) and (curr_node->right == nullptr))
+        else
         {
-            std::cout << curr_node->value;
-            parents.pop_back();
+            // в противном случае достаем из стэка родителя
+            // и пробуем пройти в его правое поддерево
+            // если ни разу там не были
             curr_node = parents.back();
+            if ((curr_node->right != nullptr) & (curr_node->right != last_node))
+            {
+                curr_node = curr_node->right;
+            } else
+            {
+                parents.pop_back();
+                std::cout << curr_node->value << " ";
+                last_node = curr_node;
+            }
         }
-        // для правых веток повторяем итерацию
-        curr_node = curr_node->right;
-        parents.push_back(curr_node);
     }
 }
 
 int main()
 {
-    std::vector<int>vec = std::vector<int>{1, 2, 3};
     Binary_Tree tree = Binary_Tree();
-    for (int i = 0; i < 3; i++) {
-        tree.insert(vec[i]);
+    int num_nodes = 0;
+    int value = 0;
+    std::cin >> num_nodes;
+    for (int i = 0; i < num_nodes; i++) {
+        std::cin >> value;
+        tree.insert(value);
     }
     tree.post_order_traversal();
     return 0;
