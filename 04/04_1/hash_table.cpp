@@ -27,7 +27,6 @@ int get_hash(const std::string &key, const int& m)
     {
         hash = (hash * 19 + key[i]) % m;
     }
-    std::cout << hash;
     return hash;
 }
 
@@ -39,11 +38,23 @@ public:
     bool add(Hash_Table_Elem* new_elem);
     bool remove(const std::string &key);
     bool has(const std::string &key);
+    ~Hash_Table();
 private:
     int size = 0;
     std::vector<Hash_Table_Elem*> container;
     void rehash();
 };
+
+Hash_Table::~Hash_Table()
+{
+    for (int i = 0; i < container.size(); ++i)
+    {
+        if (container[i] != NULL)
+        {
+            delete container[i];
+        }
+    }
+}
 
 
 void Hash_Table::rehash()
