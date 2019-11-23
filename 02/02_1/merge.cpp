@@ -17,7 +17,7 @@ void merge_with_inv_count(std::vector<int> &vec, int begin1,
     int vec1_num = begin1, vec2_num = begin2;
     int res_vec_num = 0;
     int end1 = begin2 - 1;
-    int vec1_size = begin1 - end1 + 1;
+    int vec1_size = end1 - begin1 + 1;
     int vec2_size = end2 - begin2 + 1;
     std::vector<int> res_vec = std::vector<int>(vec1_size + vec2_size);
 
